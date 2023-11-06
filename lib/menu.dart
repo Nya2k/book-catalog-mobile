@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 class BookItem {
   final String name;
   final IconData icon;
+  final Color color;
 
-  BookItem(this.name, this.icon);
+  BookItem(this.name, this.icon, this.color);
 }
 
 class MyHomePage extends StatelessWidget {
     MyHomePage({Key? key}) : super(key: key);
 
     final List<BookItem> items = [
-      BookItem("Lihat Item", Icons.checklist),
-      BookItem("Tambah Item", Icons.add_shopping_cart),
-      BookItem("Logout", Icons.logout),
+      BookItem("Lihat Item", Icons.checklist, Colors.deepPurple.shade300),
+      BookItem("Tambah Item", Icons.add_shopping_cart, Colors.deepPurple),
+      BookItem("Logout", Icons.logout, Colors.deepPurple.shade700),
   ];
 
     @override
@@ -78,7 +79,7 @@ class BookCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.deepPurple.shade300,
+      color: item.color,
       child: InkWell(
         // Area responsive terhadap sentuhan
         onTap: () {
