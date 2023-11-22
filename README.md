@@ -133,3 +133,55 @@ Switch screen to new route and replace the current route on the stack with the n
 17. In `daftar_buku.dart`, create `BookListPage` class that return ListTile of text of book name, amount, and description (for this assignment, the books are still static defined when routing to daftar buku page)
 18. Add `Daftar Buku` ListTile inside left drawer widget and add routing to daftar buku page inside the list tile and `Lihat Buku` shop card
 </details>
+    
+### Assignment 9
+    
+<details>
+<summary>Can we retrieve JSON data without creating a model first? If yes, is it better than creating a model before retrieving JSON data?</summary>
+    
+We can retrieve JSON data without creating a model first, it's done by manual parsing. For a smaller and more flexible in handling various JSON formats, manual parsing is better. But for a larger project and more complex, models can provide clear structure and safety.
+</details>
+
+<details>
+<summary>Explain the function of CookieRequest and explain why a CookieRequest instance needs to be shared with all components in a Flutter application.</summary>
+    
+Function of CookieRequest:
+- Creating HTTP requests with cookies : It's commonly used for maintaining session information, user authentication, and other data.
+- Handling authentication : it's used to manage the process of verifying the identity of a user through credentials or tokens.
+
+CookieRequest instance needs to be shared with all components for state managing. If the CookieRequest instance holds state related to user authentication, session management, or other user-specific information stored in cookies, sharing it ensures that all components have access to the latest information. Sharing CookieRequest also ensure consistency behavior specifically for global configurations.
+
+</details>
+    
+<details>
+<summary>Explain the mechanism of fetching data from JSON until it can be displayed on Flutter.</summary>
+    
+HTTP requests' made to a server that provides JSON data then when it's received the data is parsed to Dart objects using libraries like `dart:convert`. The information is extracted and used to populate Flutter widgets. The data will be rendered and displayed as the content in Flutter widgets.
+</details>
+
+<details>
+<summary>Explain the authentication mechanism from entering account data on Flutter to Django authentication completion and the display of menus on Flutter.</summary>
+
+The data in Flutter input form is sent via HTTP request to Django server. The data will be verified the credentials using the auth systems. If success, Django will return authentication tokens to Flutter and used to fetch menu data. When fetching, the tokens is included in the headers for authorizations.
+</details>
+    
+<details>
+<summary>List all the widgets you used in this assignment and explain their respective functions.</summary>
+
+- ListView : widget that displays a scrollable list of widgets
+- FutureBuilder : widget that simplifies the process of working with asynchronous operations
+- AppBar : material design widget that represents the top app bar
+- ElevatedButton : widget that represents a material design raised button
+</details>
+    
+<details>
+<summary>Step by Step</summary>    
+
+1. Make Django authentication page returning JSON response in Django project
+2. Create login page and connect it with Django project
+3. Make custom model of project Item
+4. Fetch data from Django to be displayed in Flutter project
+5. Create list_product.dart to display the item and add it to left drawer and shop card
+6. Implement logout in Django and connect the Flutter by fetching to the Django logout URL
+7. Imlement 1 bonus by changing the endpoint JSON to `json/user` and give CookieRequest
+</details>

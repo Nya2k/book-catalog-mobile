@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:book_catalog/models/product.dart';
 import 'package:book_catalog/widgets/left_drawer.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 
 class ProductPage extends StatefulWidget {
     const ProductPage({Key? key}) : super(key: key);
@@ -15,16 +17,10 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-Future<List<Item>> fetchProduct() async {
-    var url = Uri.parse(
-        'https://eudora-vanya-tugas.pbp.cs.ui.ac.id/main/json/');
-    var response = await http.get(
-        url,
-        headers: {"Content-Type": "application/json"},
+Future<List<Item>> fetchProduct(CookieRequest request) async {
+    var data = await request.get(
+        'http://127.0.0.1:8000/main/json/user/',
     );
-
-    // melakukan decode response menjadi bentuk json
-    var data = jsonDecode(utf8.decode(response.bodyBytes));
 
     // melakukan konversi data json menjadi object Product
     List<Item> list_product = [];
@@ -38,13 +34,14 @@ Future<List<Item>> fetchProduct() async {
 
 @override
 Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
         appBar: AppBar(
         title: const Text('Item'),
         ),
         drawer: const LeftDrawer(),
         body: FutureBuilder(
-            future: fetchProduct(),
+            future: fetchProduct(request),
             builder: (context, AsyncSnapshot snapshot) {
                 if (snapshot.data == null) {
                     return const Center(child: CircularProgressIndicator());
