@@ -1,7 +1,13 @@
+// ignore_for_file: unnecessary_string_interpolations, use_build_context_synchronously
+
+import 'package:book_catalog/screens/list_product.dart';
+import 'package:book_catalog/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:book_catalog/screens/daftar_buku.dart';
 import 'package:book_catalog/screens/book_form.dart';
 import 'package:book_catalog/models/book_model.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 
 class ShopItem {
   final String name;
@@ -18,11 +24,12 @@ class ShopCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Material(
       color: item.color,
       child: InkWell(
         // Area responsive terhadap sentuhan
-        onTap: () {
+        onTap: () async {
           // Memunculkan SnackBar ketika diklik
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
@@ -32,11 +39,31 @@ class ShopCard extends StatelessWidget {
           if (item.name == "Tambah Buku") {
             Navigator.push(context, MaterialPageRoute(builder: (context) => const BookFormPage()));
           } else if (item.name == "Lihat Buku") {
-            List<Book> books = [
-                Book(name: 'Buku 1', amount: 10, description: 'Description'),
-                Book(name: 'Buku 2', amount: 15, description: 'Description'),
-            ];
-            Navigator.push(context, MaterialPageRoute(builder: (context) => BookListPage(books: books)));
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProductPage()),
+                );
+          } else if (item.name == "Lihat Produk") {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const ProductPage()));
+          } else if (item.name == "Logout") {
+            final response = await request.logout(
+                "https://eudora-vanya-tugas.pbp.cs.ui.ac.id/auth/logout/");
+            String message = response["message"];
+            if (response['status']) {
+              String uname = response["username"];
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("$message Sampai jumpa, $uname."),
+              ));
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("$message"),
+              ));
+            }
           }
         },
         child: Container(

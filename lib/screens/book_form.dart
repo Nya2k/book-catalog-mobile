@@ -1,5 +1,12 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:convert';
+
+import 'package:book_catalog/screens/menu.dart';
 import 'package:flutter/material.dart';
 import 'package:book_catalog/widgets/left_drawer.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 
 class BookFormPage extends StatefulWidget {
     const BookFormPage({super.key});
@@ -16,6 +23,7 @@ class _BookFormPageState extends State<BookFormPage> {
     
     @override
     Widget build(BuildContext context) {
+        final request = context.watch<CookieRequest>();
         return Scaffold(
           appBar: AppBar(
             title: const Center(
@@ -114,37 +122,33 @@ class _BookFormPageState extends State<BookFormPage> {
                           backgroundColor:
                               MaterialStateProperty.all(Colors.deepPurple.shade700),
                         ),
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text('Buku berhasil tersimpan'),
-                                  content: SingleChildScrollView(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text('Nama: $_name'),
-                                        Text('Jumlah: $_amount'), // tambah value
-                                        Text('Deskripsi: $_description')
-                                      ],
-                                    ),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      child: const Text('OK'),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          _formKey.currentState!.reset();
-                          }
+                        onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                                // Kirim ke Django dan tunggu respons
+                                final response = await request.postJson(
+                                "https://eudora-vanya-tugas.pbp.cs.ui.ac.id/main/create-flutter/",
+                                jsonEncode(<String, String>{
+                                    'name': _name,
+                                    'amount': _amount.toString(),
+                                    'description': _description,
+                                }));
+                                if (response['status'] == 'success') {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                    content: Text("Item baru berhasil disimpan!"),
+                                    ));
+                                    Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => MyHomePage()),
+                                    );
+                                } else {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                        content:
+                                            Text("Terdapat kesalahan, silakan coba lagi."),
+                                    ));
+                                }
+                            }
                         },
                         child: const Text(
                           "Save",
